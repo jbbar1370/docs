@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>یافتن کیف پول رمزارز</title>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: white;
+      direction: rtl;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .info-box {
+      background: rgba(255, 0, 0, 0.15);
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      font-size: 14px;
+      text-align: justify;
+      color: #9b1c1c;
+      border: 1px solid #9b1c1c;
+    }
+    .section {
+      display: none;
+      margin-top: 40px;
+    }
+    .section.active {
+      display: block;
+    }
+    button {
+      border: none;
+      padding: 12px 20px;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .wallet {
+      background: #273549;
+      border-radius: 10px;
+      padding: 12px 15px;
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+      border: 1px solid #2e4a74;
+      direction: ltr;
+    }
+    .wallet .details {
+      text-align: left;
+      font-size: 13px;
+      color: #a0aec0;
+    }
+    .seed {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .seed span {
+      background: #334155;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-family: monospace;
+      user-select: none;
+    }
+    .back {
+      margin-top: 20px;
+      background: gray;
+    }
+    .copy {
+      background: #16a34a;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 25px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(22, 163, 74, 0.5);
+    }
+    .copy:hover {
+      background: #15803d;
+    }
+    .payment-box {
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      direction: ltr;
+      max-width: 100%;
+      overflow-wrap: break-word;
+    }
+    .payment-box p {
+      margin: 10px 0;
+    }
+    .support-btn {
+      background: #0088cc;
+      margin-top: 15px;
+      width: 100%;
+      font-weight: bold;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    .support-btn:hover {
+      background: #006699;
+    }
+    .currency-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .currency-button {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+      padding: 5px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .currency-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+    }
+    .currency-code {
+      font-size: 18px;
+      margin-top: 5px;
+      font-family: monospace;
+    }
+    .payment-address {
+      background: #334155;
+      padding: 8px 12px;
+      border-radius: 6px;
+      user-select: all;
+      cursor: text;
+      margin: 5px 0;
+      font-family: monospace;
+      font-size: 12px;
+      color: #e2e8f0;
+      word-break: break-all;
+      max-width: 100%;
+      display: inline-block;
+      max-width: 320px;
+    }
+    #multiSearchBtn {
+      background-color: #f59e0b;
+      color: #1a202c;
+      font-weight: bold;
+      margin-top: 20px;
+      border-radius: 12px;
+      padding: 15px 10px;
+      box-shadow: 0 4px 8px rgba(245, 158, 11, 0.5);
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+    }
+    #multiSearchBtn:hover {
+      background-color: #d97706;
+      color: white;
+    }
+    #animatedNumber {
+      font-family: monospace; 
+      font-size: 40px; 
+      text-align: center; 
+      margin: 20px 0; 
+      user-select: none;
+      letter-spacing: 6px;
+      color: #38bdf8;
+      text-shadow: 0 0 5px #0ea5e9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="info-box">
+      این ولت یاب از سرورهای هاورلینگ و هوش مصنوعی استفاده می‌کند و قدرت ولت‌یابی بالایی دارد.
+      نسخه رایگان ندارد و تمامی حقوق محفوظ است.
+    </div>
+
+    <h1 style="text-align:center;">یافتن کیف پول رمزارز</h1>
+
+    <!-- گام ۱: انتخاب ارز -->
+    <div class="section active" id="step1">
+      <p>لطفاً یکی از ارزهای زیر را برای اسکن انتخاب کنید:</p>
+      <div class="currency-buttons" id="currencyButtons"></div>
+      <div id="multiSearchBtn" onclick="multiSearch()">
+        🔍 جستجوی همزمان چند رمزارز
+      </div>
+    </div>
+
+    <!-- گام ۲: اسکن -->
+    <div class="section" id="step2">
+      <p>در حال اسکن کیف پول‌های <span id="currentCurrency"></span>...</p>
+      <div id="animatedNumber">0000</div>
+      <p style="text-align: center; font-size: 14px; color: #aaa;">صبور باشید، ممکن است چند دقیقه زمان بر باشد...</p>
+    </div>
+
+    <!-- گام ۳: نمایش ولت‌ها -->
+    <div class="section" id="step3">
+      <p>کیف پول‌های یافت‌شده برای <span id="currentCurrencyTitle"></span>:</p>
+      <div id="walletsContainer"></div>
+      <button class="copy" onclick="showSeed()">نمایش عبارت بازیابی</button>
+      <button class="back" onclick="goBackToCurrency()">بازگشت به انتخاب ارز</button>
+    </div>
+
+    <!-- گام ۴: نمایش عبارت بازیابی -->
+    <div class="section" id="step4">
+      <p><strong>عبارت بازیابی (کلمات ناقص):</strong></p>
+      <div class="seed" id="seedContainer"></div>
+      <button class="copy" onclick="showPayment()">📋 کپی کامل کلمات</button>
+      <button class="back" onclick="goBackToWallets()">بازگشت</button>
+      <div class="payment-box" id="paymentBox" style="display: none;">
+        <h3>برای مشاهده کامل عبارت بازیابی:</h3>
+        <p><strong>💰 هزینه اشتراک:</strong> 1.5 تون (اشتراک طلایی)</p>
+        <p>بعد از انتقال مبلغ اشتراک به آدرس پرداخت تون کوین، اشتراک شما به صورت خودکار فعال خواهد شد.</p>
+        <p><strong>🪙 آدرس پرداخت:</strong></p>
+        <div class="payment-address" id="paymentAddress" title="کلیک کنید و کپی کنید" onclick="copyPaymentAddress()">
+          UQB6Cu4aYSIAwyeVwGZ6Uj_Ls30T4r8BNdgTBSCf4p-CxNyS
+        </div>
+        <button class="support-btn" onclick="openTelegram()">ارتباط با پشتیبانی در تلگرام</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const currencyList = [
+    { code: 'BTC', name: 'بیت‌کوین', color: '#f7931a' },
+    { code: 'ETH', name: 'اتریوم', color: '#3c3c3d' },
+    { code: 'USDT', name: 'تتر', color: '#26a17b' },
+    { code: 'BNB', name: 'بایننس کوین', color: '#f0b90b' },
+    { code: 'XRP', name: 'ریپل', color: '#00aae4' },
+    { code: 'ADA', name: 'کاردانو', color: '#d4003f' },
+    { code: 'DOT', name: 'پولکادات', color: '#e6007a' },
+    { code: 'TON', name: 'تون', color: '#4f9ef1' },
+    { code: 'SOL', name: 'سولانا', color: '#00ffa3' }
+  ];
+  const walletsData = {
+    BTC: [
+      { id: 1, balance: 0.98, currency: 'BTC' },
+      { id: 2, balance: 0.45, currency: 'BTC' },
+    ],
+    ETH: [
+      { id: 1, balance: 2.34, currency: 'ETH' },
+      { id: 2, balance: 0.56, currency: 'ETH' },
+    ],
+    USDT: [
+      { id: 1, balance: 150, currency: 'USDT' },
+      { id: 2, balance: 230, currency: 'USDT' },
+    ],
+    BNB: [
+      { id: 1, balance: 3.2, currency: 'BNB' },
+    ],
+    XRP: [
+      { id: 1, balance: 1200, currency: 'XRP' },
+      { id: 2, balance: 300, currency: 'XRP' },
+    ],
+    ADA: [
+      { id: 1, balance: 550, currency: 'ADA' },
+    ],
+    DOT: [
+      { id: 1, balance: 87, currency: 'DOT' },
+    ],
+    TON: [
+      { id: 1, balance: 25.7, currency: 'TON' },
+      { id: 2, balance: 14.3, currency: 'TON' },
+    ],
+    SOL: [
+      { id: 1, balance: 7.6, currency: 'SOL' },
+    ],
+  };
+  const seedWords = [
+    "apple","banana","cherry","date","eagle","falcon","grape","honey","island","jungle",
+    "kite","lemon","mango","nectar","olive","peach","queen","river","sun","tree","umbrella",
+    "violet","water","xenon","yellow","zebra","alpha","bravo","charlie","delta","echo",
+    "foxtrot","golf","hotel","india","juliet","kilo","lima","mike","november","oscar",
+    "papa","quebec","romeo","sierra","tango","uniform","victor","whiskey","xray","yankee",
+    "zulu","azure","beacon","crimson","denim","ember","frost","glacier","hazel","indigo",
+    "jade","karma","lucid","myth","noble","onyx","prism","quartz","raven","shade","timber",
+    "umber","verdant","wisp","xylem","yarrow","zenith","acorn","basil","cedar","dune",
+    "everest","fennec","garnet","harbor","icicle","jasmine","kelp","lagoon","marsh","nexus",
+    "opal","pine","quiver","ripple","saffron","tundra","utopia","vortex","waltz","xanadu",
+    "yodel","zephyr","amaranth","breeze","cinder","drift","ember","fable","glint","hollow",
+    "iris","jolt","knoll","luster","muse","nova","oasis","pulse","quell","rune","spirit",
+    "thrift","unity","valley","wane","xeric","yearn","zest","arcane","bliss","cove","drama",
+    "ember","flicker","gloom","haze","ignite","jewel","karma","lunar","mirth","neon","oracle",
+    "plume","quaint","rift","shard","tempo","untold","vigil","wrath","xerox","yield","zen"
+  ];
+
+  // دکمه‌های ارزها
+  const currencyButtonsDiv = document.getElementById('currencyButtons');
+  currencyList.forEach(c => {
+    const btn = document.createElement('div');
+    btn.classList.add('currency-button');
+    btn.style.backgroundColor = c.color;
+    btn.innerHTML = `<div>${c.name}</div><div class="currency-code">${c.code}</div>`;
+    btn.onclick = () => startScan(c.code, c.name, c.color);
+    currencyButtonsDiv.appendChild(btn);
+  });
+
+  function showStep(stepId) {
+    document.querySelectorAll('.section').forEach(s => {
+      s.classList.remove('active');
+    });
+    document.getElementById(stepId).classList.add('active');
+  }
+
+  let animateNumberInterval;
+  let currentCurrency = null;
+  let currentCurrencyName = null;
+  let currentCurrencyColor = null;
+
+  function startScan(code, name, color) {
+    currentCurrency = code;
+    currentCurrencyName = name;
+    currentCurrencyColor = color;
+    showStep('step2');
+    document.getElementById('currentCurrency').textContent = name;
+    animateScanNumber();
+    setTimeout(() => {
+      stopAnimateScanNumber();
+      showWallets(currentCurrency);
+    }, 2500);
+  }
+
+  function multiSearch() {
+    currentCurrency = "چند رمزارز";
+    currentCurrencyName = "چند رمزارز";
+    currentCurrencyColor = "#38bdf8";
+    showStep('step2');
+    document.getElementById('currentCurrency').textContent = "چند رمزارز";
+    animateScanNumber(1500, 9999, true);
+    setTimeout(() => {
+      stopAnimateScanNumber();
+      showMultiWallets();
+    }, 3500);
+  }
+
+  function animateScanNumber(min=100, max=9999, random=false) {
+    const numberEl = document.getElementById('animatedNumber');
+    let num = min;
+    stopAnimateScanNumber();
+    if(random) {
+      animateNumberInterval = setInterval(() => {
+        num = Math.floor(Math.random() * (max - min)) + min;
+        numberEl.textContent = num.toString().padStart(4, '0');
+      }, 50);
+    } else {
+      animateNumberInterval = setInterval(() => {
+        num += Math.floor(Math.random() * 30) + 10;
+        if(num > max) num = max;
+        numberEl.textContent = num.toString().padStart(4, '0');
+        if(num === max) stopAnimateScanNumber();
+      }, 60);
+    }
+  }
+  function stopAnimateScanNumber() {
+    clearInterval(animateNumberInterval);
+    document.getElementById('animatedNumber').textContent = '0000';
+  }
+
+  function showWallets(code) {
+    showStep('step3');
+    document.getElementById('currentCurrencyTitle').textContent = currentCurrencyName;
+
+    const container = document.getElementById('walletsContainer');
+    container.innerHTML = '';
+
+    const wallets = walletsData[code] || [];
+
+    if(wallets.length === 0) {
+      container.innerHTML = `<p>هیچ کیف پولی یافت نشد.</p>`;
+      return;
+    }
+
+    wallets.forEach(w => {
+      const div = document.createElement('div');
+      div.className = 'wallet';
+      div.style.borderColor = currentCurrencyColor;
+      div.innerHTML = `
+        <div>شناسه: #${w.id}</div>
+        <div>موجودی: <span style="color:${currentCurrencyColor};">${w.balance} ${w.currency}</span></div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function showMultiWallets() {
+    showStep('step3');
+    document.getElementById('currentCurrencyTitle').textContent = "چند رمزارز";
+    const container = document.getElementById('walletsContainer');
+    container.innerHTML = '';
+    // نمایش 1 کیف پول از هر رمزارز
+    currencyList.forEach(c => {
+      const arr = walletsData[c.code];
+      if(arr && arr.length > 0) {
+        const w = arr[0];
+        const div = document.createElement('div');
+        div.className = 'wallet';
+        div.style.borderColor = c.color;
+        div.innerHTML = `
+          <div>شناسه: #${w.id}</div>
+          <div>موجودی: <span style="color:${c.color};">${w.balance} ${w.currency}</span></div>
+        `;
+        container.appendChild(div);
+      }
+    });
+  }
+
+  function goBackToCurrency() {
+    showStep('step1');
+  }
+
+  function goBackToWallets() {
+    showStep('step3');
+    document.getElementById('paymentBox').style.display = 'none';
+  }
+
+  function getRandomSeedWords() {
+    const selected = [];
+    while(selected.length < 12){
+      const word = seedWords[Math.floor(Math.random() * seedWords.length)];
+      if(!selected.includes(word)) selected.push(word);
+    }
+    return selected.map(word => word.length > 3 ? word.slice(0,3) + '...' : word);
+  }
+
+  function showSeed() {
+    showStep('step4');
+    const container = document.getElementById('seedContainer');
+    container.innerHTML = '';
+    getRandomSeedWords().forEach(word => {
+      const span = document.createElement('span');
+      span.textContent = word;
+      container.appendChild(span);
+    });
+    document.getElementById('paymentBox').style.display = 'none';
+  }
+
+  function showPayment() {
+    document.getElementById('paymentBox').style.display = 'block';
+  }
+
+  function copyPaymentAddress() {
+    const paymentText = document.getElementById('paymentAddress').textContent;
+    navigator.clipboard.writeText(paymentText).then(() => {
+      alert('آدرس پرداخت کپی شد!');
+    });
+  }
+
+  function openTelegram() {
+    window.open('https://t.me/Wallet_finder1_BOT', '_blank');
+  }
+</script>
+</body>
+</html>
